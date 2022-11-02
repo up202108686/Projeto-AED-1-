@@ -1,23 +1,32 @@
+#ifndef AULA_H_
+#define AULA_H_
+
 #include <vector>
 #include <iostream>
+#include "Class.h"
+#include "Student.h"
+#include "UC.h"
 
 using namespace std;
 
 class Aula {
 public:
-    Aula(uc, weekday, start_hour, duration, type, turma) {
-        this.uc = uc;
-        this.weekday = weekday;
-        this.start_hour = start_hour;
-        this.duration = duration;
-        this.type = type;
-        this.turma = turma;
-    }
+    Aula();
+    Aula(UC uc, string weekday, float start_hour, float duration, string type, Turma turma);    //erro "unknown type name 'UC'"
+    UC getUc();                                                                                 //erro "unknown type name 'UC'"
+    string getWeekday();
+    float getStart_hour();
+    float getDuration();
+    string getType();
+    Turma getTurma();                                                                           //erro "unknown type name 'Turma'"
+
 private:
-    UC uc;
+    UC uc;                                                                                      //erro "unknown type name 'UC'"
     string weekday;
     float start_hour;
     float duration;
     string type;
-    Class turma;
-}
+    Turma turma;                                                                                //erro "unknown type name 'UC'"
+};
+
+#endif
