@@ -9,5 +9,4 @@ private:
     vector<Class> classes;
     int code;
     string name;
-    Horario horario;
 }
