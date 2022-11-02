@@ -8,10 +8,6 @@ public:
 private:
     vector<Student> students;
     string code;
+    vector<Aula> aulas;
     UC uc;
-    string weekday;
-    float start_hour;
-    float duration;
-    string type;
-    string turma;
 }
