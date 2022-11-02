@@ -88,7 +88,7 @@ void readStudentsClasses(vector<UC> UCs, vector<Student> students) {
                 mins = (mins + maxs)/2;
             }
         }
-        if (!(student_exists)) { Student s = new Student(codigo, nome); }
+        if (!(student_exists)) { Student s = new Student(codigo, nome); students.push_back(s); sort(students.begin(), students.end()); }
         for(UC uc : UCs) {
             if (uc.getCode() == cadeira){
                 int len = uc.getClasses().size();
