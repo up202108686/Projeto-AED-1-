@@ -1,7 +1,6 @@
 #include "UC.h"
 #include "Class.h"
 #include "Student.h"
-#include "Horario.h"
 #include "Aula.h"
 #include <iostream>
 #include <vector>
