@@ -11,11 +11,14 @@ using namespace std;
 class Turma {
 public:
     Turma();
-    Turma(std::vector<Student> &students, string code, vector<Aula> &aulas, UC uc);
+    Turma(string code, UC uc);
     vector<Student> getStudents();
     string getCode();
     vector<Aula> getAulas();
     UC getUc();
+    void addStudent(Student s);
+    void addAula(Aula a);
+    int getN();
 
 private:
     vector<Student> students;

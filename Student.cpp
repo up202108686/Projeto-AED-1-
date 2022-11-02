@@ -8,21 +8,24 @@ Student::Student() {}
 //-------------------------------------------------------------------
 
 //Constructor -------------------
-Student::Student(vector<Turma> classes, int code, string name) {
-    this->classes = classes;                                                //erro "no viable overloaded '='"
-    this->code = code;
-    this->name = name;
+Student::Student(int code, string name) {
+    this.code = code;
+    this.name = name;
 }
 
 //Getters --------------------
 vector<Turma> Student::getClasses() {
-    return this->classes;
+    return this.classes;
 }
 
 int Student::getCode() {
-    return this->code;
+    return this.code;
 }
 
 string Student::getName() {
-    return this->name;
+    return this.name;
+}
+
+void Student::addClass(Turma t) {
+    this.classes.push_back(t);
 }

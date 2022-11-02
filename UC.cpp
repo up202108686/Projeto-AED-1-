@@ -9,16 +9,18 @@ UC::UC() {}
 //--------------------------------------------------------------------------------
 
 //Constructor ---------------------------
-UC::UC(vector<Turma> classes, std::string code) {
-    this->classes = classes;                            //erro "no viable overloaded '='"
-    this->code = code;                                  //Pode ser um erro de referência
+UC::UC(std::string code) {
+    this.code = code;                                  //Pode ser um erro de referência
 }                                                       //de vetores
 //Getters -------------------------------
 vector<Turma> UC::getClasses() {
-    return this->classes;
+    return this.classes;
 }
 
 string UC::getCode() {
-    return this->code;
+    return this.code;
 }
 
+void UC::addClass(Turma t) {
+    this.classes.push_back(t);
+}

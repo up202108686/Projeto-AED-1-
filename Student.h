@@ -14,6 +14,7 @@ public:
     vector<Turma> getClasses();                                 //erro "Use of undeclared identifier 'Turma'"
     int getCode();
     string getName();
+    void addClass(Turma t);
 
 private:
     vector<Turma> classes;                                      //erro "Use of undeclared identifier 'Turma'"

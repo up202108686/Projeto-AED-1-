@@ -2,6 +2,10 @@
 #include "Class.h"
 #include "Student.h"
 #include "Aula.h"
+#include "UC.cpp"
+#include "Class.cpp"
+#include "Student.cpp"
+#include "Aula.cpp"
 #include <iostream>
 #include <vector>
 
@@ -21,7 +25,7 @@ void readClasses(vector<UC> UCs) {
         for (UC uc : UCs) {
             if (uc.getCode() == cadeira) {
                 int len = uc.getClasses().size();
-                Class cl = uc.getClasses()[len/2]
+                Turma cl = uc.getClasses()[len/2]
                 int min = 0; int max = len;
                 while (cl.getN() != turmaN) {
                     if (cl.getN() > turmaN) {
@@ -50,12 +54,12 @@ void readClassesPerUC(vector<UC> UCs) {
         line >> uccode >> classcode;
         for (UC uc : UCs) {
             if (uc.getCode() == uccode) {
-                Class cl = new Class(classcode, uc);
+                Turma cl = new Turma(classcode, uc);
                 uc.addClass(cl)
                 break;
             }
             UC uc = new UC(uccode);
-            Class cl = new Class(classcode, uc);
+            Turma cl = new Turma(classcode, uc);
             uc.addClass(cl);
             UCs.push_back(u);
         }
@@ -92,7 +96,7 @@ void readStudentsClasses(vector<UC> UCs, vector<Student> students) {
         for(UC uc : UCs) {
             if (uc.getCode() == cadeira){
                 int len = uc.getClasses().size();
-                Class cl = uc.getClasses()[len/2];
+                Turma cl = uc.getClasses()[len/2];
                 int min = 0; int max = len;
                 while (cl.getN() != turmaN) {
                     if (cl.getN() > turmaN) {
