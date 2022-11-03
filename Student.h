@@ -3,21 +3,24 @@
 
 #include <vector>
 #include <iostream>
-#include "Class.h"
+#include <list>
+#include "UcTurma.h"
+
 
 using namespace std;
 
 class Student {
 public:
     Student();
-    Student(vector<Turma> classes, int code, string name);      //erro "Use of undeclared identifier 'Turma'"
-    vector<Turma> getClasses();                                 //erro "Use of undeclared identifier 'Turma'"
-    int getCode();
+    Student(list<UcTurma> turmas, int code, string name);
+    list<UcTurma> getTurmas();
+    int getCode() const;
     string getName();
-    void addClass(Turma t);
+    void addClass(UcTurma t);
+
 
 private:
-    vector<Turma> classes;                                      //erro "Use of undeclared identifier 'Turma'"
+    list<UcTurma> turmas;
     int code;
     string name;
 };

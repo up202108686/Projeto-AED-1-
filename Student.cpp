@@ -2,32 +2,32 @@
 // Created by nando on 02/11/2022.
 //
 #include "Student.h"
-#include "Class.h"
-#include "Class.cpp"
 
 Student::Student() {}
 
 //-------------------------------------------------------------------
 
 //Constructor -------------------
-Student::Student(int code, string name) {
-    this.code = code;
-    this.name = name;
+Student::Student(list<UcTurma> turmas, int code, string name) {
+    this->code = code;
+    this->name = name;
 }
 
 //Getters --------------------
-vector<Turma> Student::getClasses() {
-    return this.classes;
+list<UcTurma> Student::getTurmas() {
+    return this->turmas;
 }
 
-int Student::getCode() {
-    return this.code;
+int Student::getCode() const {
+    return this->code;
 }
 
 string Student::getName() {
-    return this.name;
+    return this->name;
 }
 
+/*
 void Student::addClass(Turma t) {
     this.classes.push_back(t);
 }
+ */
