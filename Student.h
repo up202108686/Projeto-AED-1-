@@ -16,7 +16,8 @@ public:
     list<UcTurma> getTurmas();
     int getCode() const;
     string getName();
-    void addClass(UcTurma t);
+    void addUcTurma(UcTurma ut);
+    bool operator< (const Student & a);
 
 
 private:

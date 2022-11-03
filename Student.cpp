@@ -10,6 +10,11 @@ Student::Student() {}
 //Constructor -------------------
 Student::Student(list<UcTurma> turmas, int code, string name) {
     this->code = code;
+    for (int i = 0; i < name.length(); ++i) {
+        if (name[i] == '_') {
+            name[i] = ' ';
+        }
+    }
     this->name = name;
 }
 
@@ -26,8 +31,13 @@ string Student::getName() {
     return this->name;
 }
 
-/*
-void Student::addClass(Turma t) {
-    this.classes.push_back(t);
+void Student::addUcTurma(UcTurma ut) {
+    this->turmas.push_back(ut);
 }
- */
+
+
+
+bool Student::operator< (const Student & a) {
+    if (this->code < a.getCode()) { return true; }
+    return false;
+}
