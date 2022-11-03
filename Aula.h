@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include "Class.h"
-#include "Student.h"
 #include "UC.h"
 
 using namespace std;

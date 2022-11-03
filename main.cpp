@@ -125,12 +125,12 @@ int main() {
     readClassesPerUC(UCs);
     readClasses(UCs);
     readStudentsClasses(UCs, students);
-    /*
+    
     for (UC uc : UCs) {
         for (Class c : uc.getClasses()) {
             cout << c.getCode();
         }
-    }*/
+    }
 
     return;
 }

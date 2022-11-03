@@ -3,6 +3,8 @@
 //
 
 #include "UC.h"
+#include "Class.h"
+#include "Class.cpp"
 
 UC::UC() {}
 

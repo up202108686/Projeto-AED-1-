@@ -2,6 +2,8 @@
 // Created by nando on 02/11/2022.
 //
 #include "Student.h"
+#include "Class.h"
+#include "Class.cpp"
 
 Student::Student() {}
 

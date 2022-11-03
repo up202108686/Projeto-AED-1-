@@ -3,6 +3,12 @@
 //
 
 #include "Class.h"
+#include "UC.h"
+#include "UC.cpp"
+#include "Student.h"
+#include "Student.cpp"
+#include "Aula.h"
+#include "Aula.cpp"
 
 Turma::Turma() {}
 

@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Student.h"
 #include "Aula.h"
+#include "UC.h"
 
 using namespace std;
 
