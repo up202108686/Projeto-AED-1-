@@ -2,6 +2,7 @@
 // Created by nando on 02/11/2022.
 //
 
+#include <list>
 #include "UcTurma.h"
 
 UcTurma::UcTurma() {}
@@ -22,8 +23,10 @@ string UcTurma::getUcCode() {
     return this->UcCode;
 }
 
-/*
-void UcTurma::addClass(Turma t) {
-    this->classes.push_back(t);
+void UcTurma::addSlot(Slot aula) {
+    this->UcTurmaAulas.push_back(aula);
 }
- */
+
+list<Slot> UcTurma::getUcTurmaAulas() {
+    return this->UcTurmaAulas;
+}
