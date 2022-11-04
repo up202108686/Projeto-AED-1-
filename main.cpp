@@ -10,6 +10,48 @@
 
 using namespace std;
 
+void displayEstudantesEmUcTurma(UcTurma uct, vector<Student> students){
+    for (Student st : students){
+        for(UcTurma ut : st.getTurmas()){
+            if (ut.getUcCode()==uct.getUcCode() && ut.getTurmaCode()==uct.getTurmaCode()){
+                cout << st.getCode() << " | " << st.getName() << "\n";
+            }
+        }
+    }
+}
+
+void displayHorarioEstudante(int code, vector<Student> students){
+    int low = 0;
+    int high = students.size()-1;
+    while(low!=high){
+        int mid = (low+high)/2;
+        if (low==mid) break;
+        if(students[mid].getCode()==code){
+            cout << students[mid].getName() << "\n";
+            list<Slot> sl;
+            for(UcTurma ut : students[mid].getTurmas()) {
+                for (Slot s : ut.getUcTurmaAulas()) sl.push_back(s);
+            }
+            sl.sort();
+            for (Slot s: sl) {
+                cout << s.getWeekday() << "," << s.getStart_hour() << "," << s.getDuration() << "," << s.getType()
+                     << "\n";
+            }
+            return;
+        }
+
+        if(students[mid].getCode()<code){
+            low = mid;
+            continue;
+        }
+        if(students[mid].getCode()>code){
+            high = mid;
+            continue;
+        }
+    }
+    cout << "O aluno não existe";
+}
+
 bool wouldBeBalanced(string uc_code, string turma_1, string turma_2, vector<Student> students, int limit) {
     vector<UcTurma> turmas;
     vector<int> students_per_turma;
@@ -157,7 +199,7 @@ void removeUcFromStudent(vector<Student> &students, int s_code, string uc_code, 
     students[si] = s;
 }
 
-void addUcToStudent(vector<Student> &students, vector<UcTurma> ucturmas, int s_code, string name, string uc_code, string turma) {
+void addUcToStudent(vector<Student> &students, vector<UcTurma> ucturmas, int s_code, string name, string uc_code, string turma, bool &is_rejected) {
     int limit = 20;                                                                                                                                             //LIMITE MAXIMO DE ESTUDANTES NUMA TURMA
     int mins = 0;
     int maxs = students.size();
@@ -196,6 +238,7 @@ void addUcToStudent(vector<Student> &students, vector<UcTurma> ucturmas, int s_c
     if (wouldBeBalanced(uc_code, "", turma, students, limit) && classesDontOverlap(s, ut)) {
         s.addUcTurma(ut);
     }
+    else { is_rejected = true; }
     students[si] = s;
     sort(students.begin(), students.end());
 }
@@ -314,6 +357,122 @@ vector<Student>  readStudentsClasses(vector<UcTurma> UcTurmas, vector<Student> s
     return students;
 }
 
+void processPedido(string pedido, vector<Student> &students, vector<UcTurma> &ucturmas, vector<string> &pedidos_rejeitados) {
+    vector<string> p;
+    string current;
+    bool is_rejected = false;
+    for (int i = 0; i < pedido.length(); i++) {
+        if (pedido[i] == ' ') {
+            p.push_back(current);
+            current = "";
+        }
+        else { current += pedido[i]; }
+    }
+    p.push_back(current);
+    if (p[1] == "RemoverTurma") {
+        int s_code = stoi(p[2]);
+        string uc_code = p[3];
+        string turma = p[4];
+        removeUcFromStudent(students, s_code, uc_code, turma);
+    }
+    else if (p[1] == "AdicionarTurma") {
+        int s_code = stoi(p[2]);
+        string name = p[5];
+        string uc_code = p[3];
+        string turma = p[4];
+        for (int i = 6; i < p.size(); i++) { name += p[i]; }
+        addUcToStudent(students, ucturmas, s_code, name, uc_code, turma, is_rejected);
+    }
+    else if (p[1] == "TrocarTurma") {
+        int s_code = stoi(p[2]);
+        string uc_code = p[3];
+        string turma_1 = p[4];
+        string turma_2 = p[5];
+        changeClass(s_code, uc_code, turma_1, turma_2, students, ucturmas, is_rejected);
+    }
+    else if (p[1] == "TrocarVariasTurmas") {
+        int s_code = stoi(p[2]);
+        vector<string> uc_codes;
+        vector<string> turmas_1;
+        vector<string> turmas_2;
+        for (int i = 3; i < p.size(); i += 3) {
+            uc_codes.push_back(p[i]);
+            turmas_1.push_back(p[i+1]);
+            turmas_2.push_back(p[i+2]);
+        }
+        changeSeveralClass(s_code, uc_codes, turmas_1, turmas_2, students, ucturmas, is_rejected);
+    }
+    if (is_rejected) { pedidos_rejeitados.push_back(pedido); }
+}
+
+void displayMenu() {
+    cout << '\n' << "Menu:\nhelp\n\nPedidos:\n";
+    cout << "pedido RemoverTurma <student code> <uc> <turma>\n";
+    cout << "pedido AdicionarTurma <student code> <uc> <turma> <student name>\n";
+    cout << "pedido TrocarTurma <student code> <uc> <turma a deixar> <turma a juntar>\n";
+    cout << "pedido TrocarVariasTurmas <student code> <uc1> <turma a deixar1> <turma a juntar1> ... <ucn> <turma a deixarn> <turma a juntarn>\n\n";
+    cout << "Listagens:\n";
+    cout << "horario <student code>\n";
+    cout << "estudantesEmTurma <uc> <turma>\n\n";
+    cout << "Terminar programa:\nclose\n";
+}
+
+void processInput(string input, vector<UcTurma> &ucturmas, vector<Student> &students, vector<string> &pedidos, vector<string> &pedidos_rejeitados) {
+    cout << '\n';
+    vector<string> p;
+    string current;
+    for (int i = 0; i < input.length(); i++) {
+        if (input[i] == ' ') {
+            p.push_back(current);
+            current = "";
+        }
+        else { current += input[i]; }
+    }
+    p.push_back(current);
+    if (p[0] == "pedido") {
+        pedidos.push_back(input);
+    }
+    else if (p[0] == "processPedidos") {
+        for (int i = 0; i < pedidos.size(); i++) {
+            processPedido(pedidos[i], students, ucturmas, pedidos_rejeitados);
+        }
+    }
+    else if (p[0] == "pedidosRejeitados") {
+        for (int i = 0; i < pedidos_rejeitados.size(); i++) {
+            cout << pedidos_rejeitados[i] << "\n";
+        }
+    }
+    else if (p[0] == "horario") {
+        int s_code = stoi(p[1]);
+        displayHorarioEstudante(s_code, students);
+    }
+    else if (p[0] == "estudantesEmTurma") {
+        string uc_code = p[1]; string turma = p[2];
+        UcTurma ut;
+        for (int i = 0; i < ucturmas.size(); i++) {
+            if (ucturmas[i].getTurmaCode() == turma && ucturmas[i].getUcCode() == uc_code) {
+                ut = ucturmas[i];
+                break;
+            }
+        }
+        displayEstudantesEmUcTurma(ut, students);
+    }
+    else if (p[0] == "help") {
+        displayMenu();
+    }
+}
+
+
+void createNewStudentsFile(vector<Student> students) {
+    ofstream ofs ("data/students_classes.csv");
+    ofs << "StudentCode,StudentName,UcCode,ClassCode" << "\n";
+    for (auto& st: students) {
+        list<UcTurma> lut = st.getTurmas();
+        for (auto& uct:  lut) {
+            ofs << ',' << st.getCode() << ',' << st.getName() << ',' << uct.getUcCode() << ',' << uct.getTurmaCode() << "\n";
+        }
+    }
+}
 
 int main() {
     vector<UcTurma> UcTurmas;
@@ -321,11 +480,15 @@ int main() {
     UcTurmas = readClassesPerUC(UcTurmas);
     UcTurmas = readClasses(UcTurmas);
     students = readStudentsClasses(UcTurmas, students);
-    for(Student st: students) {
-        cout << st.getCode() << "\n";
-        for (UcTurma ut : st.getTurmas()){
-            cout << ut.getUcCode() << ", " << ut.getTurmaCode() << "\n";
-        }
-        cout << "\n";
+    vector<string> pedidos;
+    vector<string> pedidos_rejeitados;
+    string input;
+    displayMenu();
+    while (input != "close") {
+        cout << "Enter input:";
+        cin >> input;
+        processInput(input, UcTurmas, students, pedidos, pedidos_rejeitados);
     }
+    createNewStudentsFile(students);
+    return 1;
 }

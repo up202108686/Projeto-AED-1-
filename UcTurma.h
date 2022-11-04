@@ -15,14 +15,15 @@ public:
     string getTurmaCode();
     list<Slot> getUcTurmaAulas();
     void addSlot(Slot aula);
+    void addNStudents(int n);
+    int getNumberOfStudents();
 
-    /*
-    void addClass(Turma t);
-     */
+
 private:
     string UcCode;
     string TurmaCode;
     list<Slot> UcTurmaAulas;
+    int number_of_students;
 };
 
 #endif

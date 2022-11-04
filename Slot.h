@@ -17,6 +17,7 @@ public:
     float getStart_hour();
     float getDuration();
     string getType();
+    bool operator<(const Slot & s);
 
 private:
     string weekday;

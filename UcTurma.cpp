@@ -13,6 +13,7 @@ UcTurma::UcTurma() {}
 UcTurma::UcTurma(std::string UcCode, std::string TurmaCode) {
          this->TurmaCode = TurmaCode;
          this->UcCode = UcCode;
+         this->number_of_students = 0;
 }
 //Getters -------------------------------
 string UcTurma::getTurmaCode() {
@@ -29,4 +30,11 @@ void UcTurma::addSlot(Slot aula) {
 
 list<Slot> UcTurma::getUcTurmaAulas() {
     return this->UcTurmaAulas;
+}
+
+void UcTurma::addNStudents(int n) {
+    this->number_of_students += n;
+}
+int UcTurma::getNumberOfStudents() {
+    return this->number_of_students;
 }
