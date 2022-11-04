@@ -41,3 +41,8 @@ void UcTurma::setNStudents(int n) {
 int UcTurma::getNumberOfStudents() {
     return this->number_of_students;
 }
+
+bool UcTurma::operator==(const UcTurma & ut) {
+    if (this->UcCode == ut.UcCode && this->TurmaCode == ut.TurmaCode) { return true; }
+    return false;
+}

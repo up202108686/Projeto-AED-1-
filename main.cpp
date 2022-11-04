@@ -10,6 +10,24 @@
 
 using namespace std;
 
+class NameCompare
+{
+public:
+    bool operator() (Student s1, Student s2 )
+    {
+        return s1.getName()< s2.getName();
+    }
+};
+
+void EstudantesComMaisUcTurmas(vector<Student> students, int n, bool alfa){
+    if(alfa) sort(students.begin(),students.end(),NameCompare());
+    for(Student st : students){
+        if(st.getTurmas().size()>=n){
+            cout << st.getCode() << " | " << st.getName() << " | No de UCs: " << st.getTurmas().size() <<"\n";
+        }
+    }
+}
+
 void displayEstudantesEmUcTurma(UcTurma uct, vector<Student> students){
     for (Student st : students){
         for(UcTurma ut : st.getTurmas()){
@@ -103,7 +121,9 @@ bool classesDontOverlap(Student student, UcTurma ut) {
             for (Slot s1: ut.getUcTurmaAulas()) {
                 for (Slot s2 : u.getUcTurmaAulas()) {
                     if (s1.getWeekday() == s2.getWeekday() && (s1.getType() != "T" && s2.getType() != "T")) {
-                        if ((s2.getStart_hour() <= s1.getStart_hour() <= s2.getStart_hour() + s2.getDuration()) || (s1.getStart_hour() <= s2.getStart_hour() <= s1.getStart_hour() + s1.getDuration())) {
+                        if (((s2.getStart_hour() <= s1.getStart_hour()) && (s1.getStart_hour() < s2.getStart_hour() + s2.getDuration())) || ((s1.getStart_hour() <= s2.getStart_hour()) && (s2.getStart_hour() < s1.getStart_hour() + s1.getDuration()))) {
+                            cout << s2.getWeekday() << ", " << s2.getStart_hour() << ", " << s2.getDuration() << '\n';
+                            cout << s1.getWeekday() << ", " << s1.getStart_hour() << ", " << s1.getDuration() << '\n';
                             return false;
                         }
                     }
@@ -115,6 +135,7 @@ bool classesDontOverlap(Student student, UcTurma ut) {
 }
 
 void changeClass(int student_code, string uc_code, string turma_1, string turma_2, vector<Student> &students, vector<UcTurma> ucturmas, bool &throw_away) {
+    sort(students.begin(), students.end());
     int limit = 20;                                                                                                                                             //LIMITE MAXIMO DE ESTUDANTES NUMA TURMA
     throw_away = false;
     for (int i = 0; i < students.size(); i++) {
@@ -138,6 +159,7 @@ void changeClass(int student_code, string uc_code, string turma_1, string turma_
 }
 
 void changeSeveralClass(int student_code, vector<string> uc_code, vector<string> turma_1, vector<string> turma_2, vector<Student> &students, vector<UcTurma> ucturmas, bool &throw_away) {
+    sort(students.begin(), students.end());
     int limit = 20;                                                                                                                                             //LIMITE MAXIMO DE ESTUDANTES NUMA TURMA
     throw_away = false;
     for (int i = 0; i < students.size(); i++) {
@@ -175,6 +197,7 @@ void changeSeveralClass(int student_code, vector<string> uc_code, vector<string>
 }
 
 void removeUcFromStudent(vector<Student> &students, int s_code, string uc_code, string turma) {
+    sort(students.begin(), students.end());
     int mins = 0;
     int maxs = students.size();
     int si = students.size() / 2;
@@ -200,6 +223,7 @@ void removeUcFromStudent(vector<Student> &students, int s_code, string uc_code, 
 }
 
 void addUcToStudent(vector<Student> &students, vector<UcTurma> ucturmas, int s_code, string name, string uc_code, string turma, bool &is_rejected) {
+    sort(students.begin(), students.end());
     int limit = 20;                                                                                                                                             //LIMITE MAXIMO DE ESTUDANTES NUMA TURMA
     int mins = 0;
     int maxs = students.size();
@@ -410,9 +434,11 @@ void displayMenu() {
     cout << "pedido RemoverTurma <student code> <uc> <turma>\n";
     cout << "pedido AdicionarTurma <student code> <uc> <turma> <student name>\n";
     cout << "pedido TrocarTurma <student code> <uc> <turma a deixar> <turma a juntar>\n";
-    cout << "pedido TrocarVariasTurmas <student code> <uc1> <turma a deixar1> <turma a juntar1> ... <ucn> <turma a deixarn> <turma a juntarn>\n\n";
+    cout << "pedido TrocarVariasTurmas <student code> <uc1> <turma a deixar1> <turma a juntar1> ... <ucn> <turma a deixarn> <turma a juntarn>\n";
+    cout << "processPedidos\npedidosRejeitados\n\n";
     cout << "Listagens:\n";
     cout << "horario <student code>\n";
+    cout << "estudantesComMaisUcs <min> <ordem alfabetica? s/n>\n";
     cout << "estudantesEmTurma <uc> <turma>\n\n";
     cout << "Terminar programa:\nclose\n";
 }
@@ -445,6 +471,12 @@ void processInput(string input, vector<UcTurma> &ucturmas, vector<Student> &stud
     else if (p[0] == "horario") {
         int s_code = stoi(p[1]);
         displayHorarioEstudante(s_code, students);
+    }
+    else if (p[0] == "estudantesComMaisUcs") {
+        int n = stoi(p[1]);
+        bool alfa = false;
+        if (p[2] == "s") { alfa = true; }
+        EstudantesComMaisUcTurmas(students, n, alfa);
     }
     else if (p[0] == "estudantesEmTurma") {
         string uc_code = p[1]; string turma = p[2];
@@ -484,11 +516,12 @@ int main() {
     vector<string> pedidos_rejeitados;
     string input;
     displayMenu();
+    cout << '\n';
     while (input != "close") {
-        cout << "Enter input:";
-        cin >> input;
+        cout << "Enter input:\n";
+        getline(std::cin, input);
         processInput(input, UcTurmas, students, pedidos, pedidos_rejeitados);
     }
     createNewStudentsFile(students);
-    return 1;
+    return 0;
 }
