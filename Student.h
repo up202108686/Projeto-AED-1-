@@ -17,6 +17,7 @@ public:
     int getCode() const;
     string getName();
     void addUcTurma(UcTurma ut);
+    void removeUcTurma(UcTurma ut);
     bool operator< (const Student & a);
 
 

@@ -35,7 +35,9 @@ void Student::addUcTurma(UcTurma ut) {
     this->turmas.push_back(ut);
 }
 
-
+void Student::removeUcTurma(UcTurma ut) {
+    this->turmas.remove(ut);
+}
 
 bool Student::operator< (const Student & a) {
     if (this->code < a.getCode()) { return true; }
