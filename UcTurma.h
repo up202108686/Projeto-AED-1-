@@ -16,6 +16,7 @@ public:
     list<Slot> getUcTurmaAulas();
     void addSlot(Slot aula);
     void addNStudents(int n);
+    void setNStudents(int n);
     int getNumberOfStudents();
 
 

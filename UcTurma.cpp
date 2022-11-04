@@ -35,6 +35,9 @@ list<Slot> UcTurma::getUcTurmaAulas() {
 void UcTurma::addNStudents(int n) {
     this->number_of_students += n;
 }
+void UcTurma::setNStudents(int n) {
+    this->number_of_students = n;
+}
 int UcTurma::getNumberOfStudents() {
     return this->number_of_students;
 }

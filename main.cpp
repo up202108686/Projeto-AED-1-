@@ -52,25 +52,25 @@ void displayHorarioEstudante(int code, vector<Student> students){
     cout << "O aluno não existe";
 }
 
-bool wouldBeBalanced(string uc_code, string turma_1, string turma_2, vector<Student> students, int limit) {
-    vector<UcTurma> turmas;
-    vector<int> students_per_turma;
+void countStudentsPerTurma(vector<UcTurma> &ucturmas, vector<Student> students){
+    for (int i = 0; i < ucturmas.size(); i++){
+        ucturmas[i].setNStudents(0);
+    }
     for (int i = 0; i < students.size(); i++) {
         for (UcTurma ut : students[i].getTurmas()) {
-            if (ut.getUcCode() == uc_code) {
-                bool turma_exists = false;
-                for (int j = 0; j < turmas.size(); j++) {
-                    if (ut.getTurmaCode() == turmas[j].getTurmaCode()) {
-                        students_per_turma[j] += 1;
-                        turma_exists = true;
-                        break;
-                    }
-                }
-                if (!(turma_exists)) {
-                    turmas.push_back(ut);
-                    students_per_turma.push_back(1);
-                }
-            }
+            ut.addNStudents(1);
+        }
+    }
+}
+
+bool wouldBeBalanced(string uc_code, string turma_1, string turma_2, vector<Student> students, vector<UcTurma> ucturmas, int limit) {
+    countStudentsPerTurma(ucturmas, students);
+    vector<UcTurma> turmas;
+    vector<int> students_per_turma;
+    for (int i = 0; i < ucturmas.size(); i++) {
+        if (ucturmas[i].getUcCode() == uc_code) {
+            turmas.push_back(ucturmas[i]);
+            students_per_turma.push_back(ucturmas[i].getNumberOfStudents());
         }
     }
     for (int j = 0; j < turmas.size(); j++) {
@@ -128,7 +128,7 @@ void changeClass(int student_code, string uc_code, string turma_1, string turma_
                     ut1 = ucturmas[j];
                 }
             }
-            if (classesDontOverlap(students[i], ut2) && wouldBeBalanced(uc_code, turma_1, turma_2, students, limit)) {
+            if (classesDontOverlap(students[i], ut2) && wouldBeBalanced(uc_code, turma_1, turma_2, students, ucturmas, limit)) {
                 students[i].removeUcTurma(ut1);
                 students[i].addUcTurma(ut2);
             }
@@ -150,7 +150,7 @@ void changeSeveralClass(int student_code, vector<string> uc_code, vector<string>
                         ut = ucturmas[k];
                     }
                 }
-                if (classesDontOverlap(students[i], ut) && wouldBeBalanced(uc_code[j], turma_1[j], turma_2[j], students, limit)) {
+                if (classesDontOverlap(students[i], ut) && wouldBeBalanced(uc_code[j], turma_1[j], turma_2[j], students, ucturmas, limit)) {
                     total_possible += 1;
                 }
             }
@@ -235,7 +235,7 @@ void addUcToStudent(vector<Student> &students, vector<UcTurma> ucturmas, int s_c
             ut = ucturmas[i];
         }
     }
-    if (wouldBeBalanced(uc_code, "", turma, students, limit) && classesDontOverlap(s, ut)) {
+    if (wouldBeBalanced(uc_code, "", turma, students, ucturmas, limit) && classesDontOverlap(s, ut)) {
         s.addUcTurma(ut);
     }
     else { is_rejected = true; }
