@@ -28,6 +28,25 @@ void EstudantesComMaisUcTurmas(vector<Student> students, int n, bool alfa){
     }
 }
 
+void displayOcupacaoUcTurmas(vector <UcTurma> &UcTurmas, vector<Student> &Students,  bool Crescente) {
+    vector<UcTurma> OcupacaoUcTurmas;
+    for (UcTurma uct: UcTurmas) {
+        OcupacaoUcTurmas.push_back(uct);
+    }
+
+    string Ordenacao = "crescente";
+    sort(OcupacaoUcTurmas.begin(), OcupacaoUcTurmas.end());
+    if(!Crescente) {
+        sort(OcupacaoUcTurmas.rbegin(), OcupacaoUcTurmas.rend());
+        Ordenacao = "decrescente";
+    }
+    cout << "Ordenacao da Ocupacao de UC e Turmas por ordem " << Ordenacao << "\n";
+    cout << "\n" << " UcCode   -" << "  ClassCode -" << " Occupation" << "\n";
+    for (UcTurma uct2: OcupacaoUcTurmas) {
+        cout << ' ' << uct2.getUcCode() << " -  " << uct2.getTurmaCode() << "   - " << uct2.getNumberOfStudents() << "\n";
+    }
+}
+
 void displayEstudantesEmUcTurma(UcTurma uct, vector<Student> students){
     for (Student st : students){
         for(UcTurma ut : st.getTurmas()){
@@ -55,6 +74,7 @@ void displayHorarioEstudante(int code, vector<Student> students){
                 cout << s.getWeekday() << "," << s.getStart_hour() << "," << s.getDuration() << "," << s.getType()
                      << "\n";
             }
+            cout << '\n';
             return;
         }
 
@@ -67,10 +87,10 @@ void displayHorarioEstudante(int code, vector<Student> students){
             continue;
         }
     }
-    cout << "O aluno não existe";
+    cout << "O aluno não existe\n";
 }
 
-void countStudentsPerTurma(vector<UcTurma> &ucturmas, vector<Student> students){
+/*void countStudentsPerTurma(vector<UcTurma> &ucturmas, vector<Student> students){
     for (int i = 0; i < ucturmas.size(); i++){
         ucturmas[i].setNStudents(0);
     }
@@ -79,10 +99,10 @@ void countStudentsPerTurma(vector<UcTurma> &ucturmas, vector<Student> students){
             ut.addNStudents(1);
         }
     }
-}
+}*/
 
 bool wouldBeBalanced(string uc_code, string turma_1, string turma_2, vector<Student> students, vector<UcTurma> ucturmas, int limit) {
-    countStudentsPerTurma(ucturmas, students);
+    //countStudentsPerTurma(ucturmas, students);
     vector<UcTurma> turmas;
     vector<int> students_per_turma;
     for (int i = 0; i < ucturmas.size(); i++) {
@@ -151,7 +171,9 @@ void changeClass(int student_code, string uc_code, string turma_1, string turma_
             }
             if (classesDontOverlap(students[i], ut2) && wouldBeBalanced(uc_code, turma_1, turma_2, students, ucturmas, limit)) {
                 students[i].removeUcTurma(ut1);
+                ut1.addNStudents(-1);
                 students[i].addUcTurma(ut2);
+                ut2.addNStudents(1);
             }
             else { throw_away = true; }
         }
@@ -188,7 +210,9 @@ void changeSeveralClass(int student_code, vector<string> uc_code, vector<string>
                         }
                     }
                     students[i].removeUcTurma(ut1);
+                    ut1.addNStudents(-1);
                     students[i].addUcTurma(ut2);
+                    ut2.addNStudents(1);
                 }
             }
             else { throw_away = true; }
@@ -216,6 +240,7 @@ void removeUcFromStudent(vector<Student> &students, int s_code, string uc_code, 
     for (UcTurma ut : s.getTurmas()) {
         if (ut.getUcCode() == uc_code && ut.getTurmaCode() == turma) {
             s.removeUcTurma(ut);
+            ut.addNStudents(-1);
             break;
         }
     }
@@ -261,6 +286,7 @@ void addUcToStudent(vector<Student> &students, vector<UcTurma> ucturmas, int s_c
     }
     if (wouldBeBalanced(uc_code, "", turma, students, ucturmas, limit) && classesDontOverlap(s, ut)) {
         s.addUcTurma(ut);
+        ut.addNStudents(1);
     }
     else { is_rejected = true; }
     students[si] = s;
@@ -317,7 +343,7 @@ vector<UcTurma> readClassesPerUC(vector<UcTurma> UcTurmas) {
     return UcTurmas;
 }
 
-vector<Student>  readStudentsClasses(vector<UcTurma> UcTurmas, vector<Student> students) {
+vector<Student>  readStudentsClasses(vector<UcTurma> &UcTurmas, vector<Student> students) {
     ifstream infile("data/students_classes.csv");
     string line;
     bool first = true;
@@ -371,6 +397,7 @@ vector<Student>  readStudentsClasses(vector<UcTurma> UcTurmas, vector<Student> s
             for (int i = 0; i < UcTurmas.size(); i++) {
                 if (UcTurmas[i].getTurmaCode() == turma && UcTurmas[i].getUcCode() == cadeira) {
                     s.addUcTurma(UcTurmas[i]);
+                    UcTurmas[i].addNStudents(1);
                     students[si] = s;
                     break;
                 }
@@ -439,6 +466,7 @@ void displayMenu() {
     cout << "Listagens:\n";
     cout << "horario <student code>\n";
     cout << "estudantesComMaisUcs <min> <ordem alfabetica? s/n>\n";
+    cout << "ocupacaoTurmas <crescente/decrescente>\n";
     cout << "estudantesEmTurma <uc> <turma>\n\n";
     cout << "Terminar programa:\nclose\n";
 }
@@ -477,6 +505,11 @@ void processInput(string input, vector<UcTurma> &ucturmas, vector<Student> &stud
         bool alfa = false;
         if (p[2] == "s") { alfa = true; }
         EstudantesComMaisUcTurmas(students, n, alfa);
+    }
+    else if (p[0] == "ocupacaoTurmas") {
+        bool crescente = false;
+        if (p[1] == "crescente") { crescente = true; }
+        displayOcupacaoUcTurmas(ucturmas, students, crescente);
     }
     else if (p[0] == "estudantesEmTurma") {
         string uc_code = p[1]; string turma = p[2];

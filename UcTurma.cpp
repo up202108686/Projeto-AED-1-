@@ -46,3 +46,8 @@ bool UcTurma::operator==(const UcTurma & ut) {
     if (this->UcCode == ut.UcCode && this->TurmaCode == ut.TurmaCode) { return true; }
     return false;
 }
+
+bool UcTurma::operator<(const UcTurma & ut) {
+    if (this->number_of_students < ut.number_of_students) { return true; }
+    return false;
+}

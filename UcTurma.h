@@ -19,6 +19,7 @@ public:
     void setNStudents(int n);
     int getNumberOfStudents();
     bool operator==(const UcTurma & ut);
+    bool operator<(const UcTurma & ut);
 
 
 private:
